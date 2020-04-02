@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="cn" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="<%=basePath%>">
+
+    <title>My JSP 'records.jsp' starting page</title>
+
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+
+</head>
+
+<body>
+
+<header th:replace="bbs/header"/>
+
+<div class="container" style="margin-top: 30px">
+    <div class="row">
+        <div class="col-xs-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li role="presentation"><a th:href="@{/user/userInfo.action(id=${{#httpSession.getAttribute('userId')}})}">资料修改</a></li>
+                <li role="presentation" ><a th:href="@{/user/mypost.action(id=${{#httpSession.getAttribute('userId')}})}">我的帖子</a></li>
+
+<!--                <li role="presentation" ><a th:href="@{/user/mypost.action(id=1)}">我的帖子</a></li>-->
+                <li role="presentation" class="active"><a th:href="@{/admin/getApplyRecord.action(id=${{#httpSession.getAttribute('userId')}})}">申请记录</a></li>
+
+            </ul>
+        </div>
+
+        <div class="col-md-9">
+
+            <ul class="list-group">
+                <a class="list-group-item active">
+                    申请记录
+                </a>
+               <!--&lt;!&ndash; bestPostList&ndash;&gt;-->
+           <div th:if="${bestPostList.size()}==0">
+               <div class="list-group-item">
+                 <p>当前无申请记录</p>
+               </div>
+             </div>
+
+                <div th:unless="${bestPostList.size()}==0">
+                    <div th:each="bl:${bestPostList}">
+                    <div class="list-group-item">
+                       <!--   bl.postId--><!--@{/postAndFollow/findByForumId.action(forum_id=${{p.forumId}}-->
+                        <a th:href="@{/postAndFollow/findByPost_Id.action(id=${{bl.postId}})}" style="color:grey">
+                            <h4 class="list-group-item-heading" style="color:black" th:text="${bl.post.title}"></h4>
+
+                        </a>
+                        <p th:if="${bl.state}==0" style="float: right;margin-right: 50px;margin-top: -15px;">状态：等待审核中</p>
+                        <p th:if="${bl.state}==1" style="float: right;margin-right: 50px;margin-top: -15px;">状态：已同意</p>
+                        <p th:if="${bl.state}==2" style="float: right;margin-right: 50px;margin-top: -15px;">状态：已被拒绝</p>
+                    </div>
+
+                </div>
+                </div>
+             <!--   <div th:each="bl:${bestPostList}">
+                    <div class="list-group-item">
+                        &lt;!&ndash;
+                    </div>
+                </div>-->
+            </ul>
+
+
+         <!--   &lt;!&ndash;下面是分页的算法，照搬之前的即可&ndash;&gt;-->
+        </div>
+    </div>
+</div>
+</body>
+</html>

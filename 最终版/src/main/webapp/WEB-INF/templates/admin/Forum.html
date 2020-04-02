@@ -1,0 +1,114 @@
+﻿<!DOCTYPE HTML>
+<html lang="cn" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<!--[if lt IE 9]>
+	<script type="text/javascript" src="../../../static/admin/lib/html5shiv.js"></script>
+	<script type="text/javascript" src="../../../static/admin/lib/respond.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui.admin/css/H-ui.admin.css" />
+	<link rel="stylesheet" type="text/css" href="../../../static/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+	<link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+	<link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui.admin/css/style.css" />
+	<!--[if IE 6]>
+	<script type="text/javascript" src="../../../static/admin/lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+	<script>DD_belatedPNG.fix('*');</script>
+	<![endif]-->
+	<title>模块管理</title>
+</head>
+<body>
+<div class="page-container">
+	<div class="text-c"> 日期范围：
+		<input type="text" class="input-text" style="width:250px" placeholder="输入模块标题" id="" name="">
+		<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> 搜用户</button>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l">
+		<a href="javascript:;" onclick="Fourm_add('模块','Fourm-add.html')" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加模块</a></span> <span class="r"></div>
+	<div class="mt-20">
+		<table class="table table-border table-bordered table-hover table-bg table-sort">
+			<thead>
+			<tr class="text-c">
+				<th width="25"><input type="checkbox" name="" value=""></th>
+				<th width="80">ID</th>
+				<th width="100">标题</th>
+				<th width="40">注释</th>
+				<th width="100">操作</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr class="text-c"th:each="subforumList:${subforumList}">
+				<td><input type="checkbox" value="1" name=""></td>
+				<td th:text="${subforumList.id}">id</td>
+				<td th:text="${subforumList.title}">标题</td>
+				<td th:text="${subforumList.info}">注释</td>
+				<td class="td-manage">
+					<a title="编辑" href="javascript:;" th:onclick="|Forum_edit(this,${subforumList.id})|" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a>
+					<a title="删除" href="javascript:;" th:onclick="|Fourm_del(this,${subforumList.id})|" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../../../static/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../../../static/admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="../../../static/admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../../../static/admin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../../../static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="../../../static/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../../static/admin/lib/laypage/1.2/laypage.js"></script>
+<script th:inline="none">
+	$(function(){
+		$('.table-sort').dataTable({
+			"aaSorting": [
+					[ 1, "desc"]
+			],//默认第几个排序
+			"bStateSave": true,//状态保存
+			"aoColumnDefs": [
+				{"orderable":false,"aTargets":[0,4]}// 制定列不参与排序
+			]
+		});
+
+	});
+	/*栏目增加*/
+	function Fourm_add(title,url){
+		alert("请确认增加模块")
+		location.replace("/admin/Forum/showAdd.action");
+	}
+
+
+	function Forum_edit(bj,id){
+		alert("请确认更改板块"+id)
+		location.replace("/admin/Forum/showUpdate.action?id="+id);
+	}
+
+	/*用户-删除*/
+	function Fourm_del(obj,id){
+		layer.confirm('确认要删除吗？',function(index){
+			$.ajax({
+				type: 'POST',
+				url: '/admin/Forum/deleteById.action',
+				data:{"id":id},
+				dataType: 'json',
+				success: function(data){
+					$(obj).parents("tr").remove();
+					layer.msg('已删除!',{icon:1,time:1000});
+				},
+				error:function(data) {
+					console.log(data.msg);
+				},
+			});
+		});
+	}
+
+</script>
+</body>
+</html>

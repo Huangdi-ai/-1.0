@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html lang="cn" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="../../../static/admin/lib/Hui-iconfont/1.0.8/iconfont.css" />
+    <link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui.admin/skin/default/skin.css" id="skin" />
+    <link rel="stylesheet" type="text/css" href="../../../static/admin/static/h-ui.admin/css/style.css" />
+    <title>公告列表</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 帖子管理 <span class="c-gray en">&gt;</span> 帖子列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+
+<div class="page-container">
+    <div class="text-c"> 日期范围：
+        <input type="text" onfocus="WdatePicker({ maxDate:'#F{$dp.$D(\'logmax\')||\'%y-%M-%d\'}' })" id="logmin" class="input-text Wdate" style="width:120px;">
+        -
+        <input type="text" onfocus="WdatePicker({ minDate:'#F{$dp.$D(\'logmin\')}',maxDate:'%y-%M-%d' })" id="logmax" class="input-text Wdate" style="width:120px;">
+        <input type="text" name="" id="" placeholder=" 帖子名称" style="width:250px" class="input-text">
+        <button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜帖子</button>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a>
+        <a class="btn btn-primary radius" onclick="notice_add('添加公告','notice-add.html')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加公告</a></span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-hover table-sort">
+            <thead>
+            <tr class="text-c">
+                <th width="40"><input name="" type="checkbox" value=""></th>
+                <th width="100">管理员</th>
+                <th width="50">公告标题</th>
+                <th width="50">公告内容</th>
+                <th width="150">发表日期时间</th>
+                <th width="100">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-c" th:each="noticeLists:${noticeLists}">
+                <td><input name="uname" type="checkbox" th:value="${noticeLists.id}"></td>
+                <td th:text="${noticeLists.adminId}">管理员</td>
+                <td th:text="${noticeLists.title}">公告标题</td>
+                <td th:text="${noticeLists.content}">公告内容</td>
+                <td class="text-c" th:text="${#dates.format(noticeLists.noticeDate,'yyyy-MM-dd')}">日期</td>
+                <td class="td-manage">
+                    <a style="text-decoration:none" th:onclick="|picture_stop(this,${noticeLists.id})|" href="javascript:;" title="下架"><i class="Hui-iconfont">&#xe6de;</i></a>
+                    <a style="text-decoration:none" class="ml-5" th:onclick="|notice_edit(this,${noticeLists.id})|" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i></a>
+                    <a style="text-decoration:none" class="ml-5" th:onclick="|notice_del(this,${noticeLists.id})|"  href="javascript:;" title="删除"><i  class="Hui-iconfont">&#xe6e2;</i></a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="../../../static/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="../../../static/admin/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="../../../static/admin/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="../../../static/admin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="../../../static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="../../../static/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="../../../static/admin/lib/laypage/1.2/laypage.js"></script>
+<script th:inline="none" >
+    //"aaSorting": [aa],var aa=[1, "desc"]
+    /*<![CDATA[*/
+    $('.table-sort').dataTable({
+        "aaSorting":[
+            [1,"desc"]
+        ],
+        "bStateSave": true,
+        "aoColumnDefs": [{'orderable':false,"aTargets":[0]
+        }]
+    });
+
+    function datadel(){
+        //<input name="uname" type="checkbox" value="">
+        // checkedNum  = $("input[name='uname']:checked").length;
+        var checkedNum  = $("input:checked").length;
+
+        layer.confirm('确认要删除吗？',function() {
+            var userIds = new Array();
+            //给每一个选中的标签都绑定一个方法
+            //$("input[name='uname']:checked").each(function(){
+            $("input[name='uname']:checked").each(function () {
+                //将标签的值放入数组中
+                userIds.push($(this).val());//此处添加不能使用add  add不是一个function
+            });
+            console.log(userIds)
+            // alert(userIds)
+            /*    也可以直接使用用jQuery发送异步请求*/
+            $.post("/admin/notice/batchDelete.action", {userIds: userIds}, function (data) {
+//alert(data)
+                if (data== 200) {
+                    //删除成功
+                    layer.msg('已删除!', {icon: 1, time: 1000});
+                    location.replace(location.href);
+                    /* if(confirm("恭喜你删除成功！点击确认刷新页面")){
+                        //删除成功直接从新发送请求，加载页面
+                        $(location).attr("href","user/showUser");
+                    } */
+                } else {
+                    alert("删除失败")
+                }
+            }, "json");
+        });
+    }
+
+    function notice_add(title,url){
+        alert("请确认增加公告")
+        location.replace("/admin/notice/showAdd.action");
+    }
+
+    function notice_edit(bj,id){
+        alert("请确认更改公告"+id)
+        location.replace("/admin/notice/showUpdate.action?id="+id);
+    }
+    /*图片-删除*/
+    function notice_del(obj,id){
+        layer.confirm('确认要删除吗？'+id,function(index){
+            $.ajax({
+                type: 'POST',
+                url: '/admin/notice/deleteById.action',
+                data:{"id":id},
+                dataType: 'json',
+                success: function(data){
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                    location.replace(location.href);
+                },
+                error:function(data) {
+                    //console.log(data.msg);
+                    console.log(data);
+                },
+            });
+        });
+    }
+</script>
+</body>
+</html>

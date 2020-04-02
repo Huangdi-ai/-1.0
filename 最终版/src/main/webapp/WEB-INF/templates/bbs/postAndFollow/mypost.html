@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="<%=basePath%>">
+
+    <title>My JSP 'mypost.jsp' starting page</title>
+
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+    <!--
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    -->
+
+</head>
+
+<body>
+<header th:replace="bbs/header"/>
+
+<div class="container" style="margin-top: 30px">
+    <div class="row">
+        <div class="col-xs-3">
+            <ul class="nav nav-pills nav-stacked">
+                <li role="presentation"><a th:href="@{/user/userInfo.action(id=${{#httpSession.getAttribute('userId')}})}">资料修改</a></li>
+
+                <li role="presentation" class="active"><a th:href="@{/user/mypost.action(id=${{#httpSession.getAttribute('userId')}})}">我的帖子</a></li>
+                <li role="presentation"><a th:href="@{/admin/getApplyRecord.action(id=${{#httpSession.getAttribute('userId')}})}">申请记录</a></li>
+            </ul>
+        </div>
+
+        <div class="col-md-9">
+            <a class="list-group-item active">
+                我的帖子
+            </a>
+            <ul class="list-group" th:each="ulist:${UserPostsList}" style="padding: 0; margin: 0;">
+
+                <div class="list-group-item" style="border-width: 0 1px 1px 1px;">
+                    <a th:href="@{/postAndFollow/findByPost_Id.action(id=${{ulist.id}})}">
+                        <h4 class="list-group-item-heading" style="color:black" th:text="${ulist.subForum.title}">[<%=post.getSubForum().getMainForum().getTitle()%>]</h4>
+                        ><span th:text="${ulist.title}"></span>
+                    </a>
+                    <a class="ml-5" th:onclick="|picture_del(this,${{ulist.id}})|" href="javascript:;" title="删除" style="float: right">删除</a>
+                  <!--  <%if (post.getPostType() == 0 && !bestPostBiz.isExist(post.getId())) {%>-->
+                    <a th:href="@{/admin/saveBestPost.action(postId=${{ulist.id}},userId=${#httpSession.getAttribute('userId')})}" style="float: right">申请精华贴&nbsp;</a>
+                    <p style="float: right;margin-right: 50px">浏览量:<span th:text="${ulist.viewNum}"></span>&nbsp;评论量:<span th:text="${ulist.replyNum}"></span>&nbsp;发表日期:<span th:text="${ulist.sendDate}"></span></p>
+                </div>
+            </ul>
+            <script type="text/javascript" src="../../../static/admin/lib/jquery/1.9.1/jquery.min.js"></script>
+            <script type="text/javascript" src="../../../static/admin/lib/layer/2.4/layer.js"></script>
+            <script type="text/javascript" src="../../../static/admin/static/h-ui/js/H-ui.min.js"></script>
+            <script type="text/javascript" src="../../../static/admin/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+            <!--请在下方写此页面业务相关的脚本-->
+            <script type="text/javascript" src="../../../static/admin/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+            <script type="text/javascript" src="../../../static/admin/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="../../../static/admin/lib/laypage/1.2/laypage.js"></script>
+            <script th:inline="none">
+                function picture_del(obj,id){
+                    layer.confirm('确认要删除吗？'+id,function(index){
+                        $.ajax({
+                            type: 'POST',
+                            url: '/admin/post/deleteById.action',
+                            data:{"id":id},
+                            dataType: 'json',
+                            success: function(data){
+                                $(obj).parents("tr").remove();
+                                layer.msg('已删除!',{icon:1,time:1000});
+                                location.replace(location.href);
+                            },
+                            error:function(data) {
+                                //console.log(data.msg);
+                                console.log(data);
+                            },
+                        });
+                    });
+                }
+            </script>
+
+                <!--这是一个分页算法-->
+                <ul class="pagination pagination-lg" style="float: right">
+                    <li><a href="/page">&laquo;</a></li>
+                    <li class="active"><a href="/index">1</a></li>
+                    <li><a href="/2">2</a></li>
+                    <li><a href="/2">3</a></li>
+                    <li><a href="/2">4</a></li>
+                    <li><a href="/2">5</a></li>
+                    <li><a href="/pages/post">&raquo;</a></li>
+                </ul><br>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>

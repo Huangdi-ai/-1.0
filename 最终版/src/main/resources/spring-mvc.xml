@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--  使用注解方式配置json转换器,使得springmvc自动进行json格式的转换 ,这里需要添加jackson-databind和jackson-annotations的jar包-->
+    <mvc:annotation-driven />
+    <!--不要处理静态资源-->
+    <mvc:default-servlet-handler />
+    <context:component-scan base-package="com.*.controller" >
+        <context:include-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller" />
+        <!-- 排除@service注解的类 -->
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Service" />
+        <!-- 排除@Repository注解的类 -->
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Repository" />
+    </context:component-scan>
+
+    <!--引入themeleaf模板代替jsp-->
+    <bean id="templateResolver"
+          class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
+        <property name="prefix" value="/WEB-INF/templates/"/>
+        <property name="suffix" value=".html"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="order" value="1"/>
+        <property name="templateMode" value="HTML5"/>
+      <!--  <property name="templateMode" value="HTML5"/>-->
+        <property name="cacheable" value="false"/>
+    </bean>
+
+    <bean id="templateEngine"
+          class="org.thymeleaf.spring5.SpringTemplateEngine">
+        <property name="templateResolver" ref="templateResolver"/>
+    </bean>
+
+    <bean id="viewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine"/>
+        <property name="characterEncoding" value="UTF-8"/>
+    </bean>
+
+
+    <!-- 文件上传配置 / 允许文件上传-->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 上传的最大限制 -->
+        <property name="maxUploadSize" value="209715200" />
+        <!-- 默认编码 -->
+        <property name="defaultEncoding" value="UTF-8" />
+        <!-- 上传文件的解析 -->
+        <property name="resolveLazily" value="true" />
+    </bean>
+</beans>

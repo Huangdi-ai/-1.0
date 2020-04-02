@@ -1,0 +1,21 @@
+postAndFollowController   -------方超类---=----命名以这个来命名---------------postAndFollow
+
+loginAndRgister          --------陈志伟------------命令以login和regist命名-------regist/login
+
+
+notice                    -----------贺俊文-----------------------------命名以notice开头
+
+
+
+black   -----member-----module    -----------袁泽阳     ------black   -----member-----module
+
+
+follow                       ------------李茂均----------命名以这个命名-----=-------follow
+
+
+
+
+
+
+
+
