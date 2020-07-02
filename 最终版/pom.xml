@@ -27,7 +27,7 @@
         <spring.version>5.1.6.RELEASE</spring.version>
         <heibernate.version>5.4.3.Final</heibernate.version>
         <spring-hibernate.version>1.2.6</spring-hibernate.version>
-        <mysql-connector-java.version>5.1.47</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
         <!-- log4j日志文件管理包版本 -->
         <slf4j.version>1.7.7</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
