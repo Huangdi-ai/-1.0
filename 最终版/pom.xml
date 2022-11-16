@@ -21,7 +21,7 @@
         <taglibs-standard-jstlel.version>1.2.5</taglibs-standard-jstlel.version>
         <maven-compiler-plugin.version>1.8</maven-compiler-plugin.version>
         <jetty-maven-plugin.version>9.4.19.v20190610</jetty-maven-plugin.version>
-        <jackson.version>2.9.5</jackson.version>
+        <jackson.version>2.12.7.1</jackson.version>
         <javaee-api.version>8.0</javaee-api.version>
         <!--spring的版本  -->
         <spring.version>5.1.6.RELEASE</spring.version>
